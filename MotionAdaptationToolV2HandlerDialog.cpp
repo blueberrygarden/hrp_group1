@@ -47,15 +47,18 @@ MotionAdaptationToolV2HandlerDialog::~MotionAdaptationToolV2HandlerDialog() {
 }
 
 void MotionAdaptationToolV2HandlerDialog::jumpTo(float timestep) {
+    // called when you play a motion in MMMViewer
     // TODO - Only an example: Adapt your new object poses and add the corresponding mmm motion from you motion representation here
     for (auto object : objects) {
-        // Set and visualize object motion
+        // Set and visualize object motion 建立和可视化目标的运动
         auto motion = motions->getMotion(object.first);
         // Retrieve objct root pose from recording for given timestep
+        // 从给定时间步的记录中检索对象根姿势（global pose）
         auto modelPoseSensor = motion->getSensorByType<MMM::ModelPoseSensor>();
         auto modelPoseSensorMeasurement = modelPoseSensor->getDerivedMeasurement(timestep);
         if (modelPoseSensorMeasurement) {
             // normally interpolated, but if timestep is less than start or bigger than end the measurement is a nullptr
+            // 通常是内插的，但如果timestep小于start或大于end，则测量值为nullptr
             object.second->setGlobalPose(modelPoseSensorMeasurement->getRootPose());
         }
     }
@@ -126,11 +129,13 @@ void MotionAdaptationToolV2HandlerDialog::jumpTo(float timestep) {
 }
 
 void MotionAdaptationToolV2HandlerDialog::open(MMM::MotionRecordingPtr motions) {
+    // called when you open a new motion in MMMViewer
     this->motions = motions->clone(); // clone motions so it can be adapted while preserving the original motion
     loadMotions();
 }
 
 void MotionAdaptationToolV2HandlerDialog::loadMotions() {
+    // methode where you implement your new motion is opened
     currentTimestep = -1.0f;
     mmm = nullptr;
     objects.clear();
@@ -175,6 +180,7 @@ void MotionAdaptationToolV2HandlerDialog::loadMotions() {
 }
 
 void MotionAdaptationToolV2HandlerDialog::setCurrentMotion(const QString &name) {
+    // gui methode to set the current motion from the box in the graphical user interface
     currentObject = motions->getMotion(name.toStdString()); // sets the current object from gui
 }
 
